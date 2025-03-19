@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 )
 
 //https://usf-cs272-s25.github.io/top10/
@@ -35,8 +36,19 @@ func main() {
 	//	return
 	//}
 	//
-	parsedString := html.EscapeString(string(all))
-	log.Println(parsedString)
+	//parsedString := html.EscapeString(string(all))
+	//log.Println(parsedString)
+	//mp:=map[string] string
+	//ur:="google.com"
+	//str:="hello there guys how are you doing today"
+	//
+	//d:=strings.Split(str,"")
+	//for _,v:=range d{
+	//	if V,oK:=mp[v];oK{
+	//
+	//
+	//	}
+	//}
 
 }
 
@@ -74,7 +86,6 @@ func clean(host string, href string) string {
 	return host
 }
 
- */
-
+*/
 
 //
