@@ -1,0 +1,340 @@
+What does the following code output?
+
+type Person struct {
+    Name string
+}
+
+func (p Person) Speak() {
+    fmt.Println("Hello, my name is", p.Name)
+}
+
+func main() {
+    p := Person{Name: "Alice"}
+    p.Speak()
+}
+A. Compilation error
+B. Hello, my name is
+C. Hello, my name is Alice
+D. Runtime panic
+ANSWER: C
+
+What is the purpose of using a pointer receiver in a method?
+A. To allow modification of the original value
+B. To reduce memory usage
+C. To create new instances
+D. To prevent nil pointer dereference
+ANSWER: A
+
+What will this code print?
+
+type Foo struct {
+    Value int
+}
+
+func (f Foo) Increment() {
+    f.Value++
+}
+
+func main() {
+    foo := Foo{Value: 10}
+    foo.Increment()
+    fmt.Println(foo.Value)
+}
+A. 11
+B. 10
+C. Compilation error
+D. Runtime panic
+ANSWER: B
+
+Which of the following statements about Go interfaces is correct?
+A. Interfaces can have fields.
+B. Interfaces must be explicitly implemented.
+C. A type satisfies an interface by implementing its methods.
+D. Interfaces cannot be embedded.
+ANSWER: C
+
+How can you check if a value is `nil` for an interface?
+A. Use `== nil` directly
+B. Use reflect.DeepEqual
+C. Use errors.Is
+D. Use interface.Nil()
+ANSWER: A
+
+What is the output?
+
+type A interface {
+    Foo()
+}
+
+type B struct{}
+
+func (b B) Foo() {
+    fmt.Println("B's Foo")
+}
+
+func Call(a A) {
+    a.Foo()
+}
+
+func main() {
+    var b B
+    Call(b)
+}
+A. B's Foo
+B. Compilation error
+C. Interface not implemented
+D. Nil pointer dereference
+ANSWER: A
+
+What will happen if a nil pointer receiver method is called?
+
+type MyStruct struct{}
+
+func (m *MyStruct) Hello() {
+    fmt.Println("Hi")
+}
+
+func main() {
+    var m *MyStruct
+    m.Hello()
+}
+A. Panic
+B. Compilation error
+C. Hi
+D. Interface conversion error
+ANSWER: C
+
+How do you define an interface with multiple methods?
+A. interface { methodA() | methodB() }
+B. interface { methodA(); methodB() }
+C. interface { methodA(), methodB() }
+D. interface methodA methodB
+ANSWER: B
+
+What will this print?
+
+type errorString struct {
+    s string
+}
+
+func (e *errorString) Error() string {
+    return e.s
+}
+
+func main() {
+    err := &errorString{"Something went wrong"}
+    fmt.Println(err)
+}
+A. nil
+B. Something went wrong
+C. &{Something went wrong}
+D. Compilation error
+ANSWER: B
+
+What is the primary purpose of `errors.Is`?
+A. To check for nil errors
+B. To compare error values with support for wrapping
+C. To log errors
+D. To unwrap multiple errors
+ANSWER: B
+
+What does `errors.As` do?
+A. Compares errors by value
+B. Logs errors to stdout
+C. Checks if an error is of a specific type and retrieves it
+D. Serializes errors into JSON
+ANSWER: C
+
+What will this print?
+
+var ErrMyError = errors.New("my error")
+
+func main() {
+    err := fmt.Errorf("wrapped: %w", ErrMyError)
+    fmt.Println(errors.Is(err, ErrMyError))
+}
+A. true
+B. false
+C. wrapped: my error
+D. Compilation error
+ANSWER: A
+
+What is true about the following code?
+
+type MyError struct {
+    Message string
+}
+
+func (e *MyError) Error() string {
+    return e.Message
+}
+
+A. MyError does not implement the error interface
+B. MyError is a valid custom error type
+C. The Error method should have a value receiver
+D. Only built-in errors are allowed
+ANSWER: B
+
+How can you ensure a method modifies a struct value?
+A. Use a pointer receiver
+B. Return a copy
+C. Use value receiver
+D. Use global variables
+ANSWER: A
+
+Which of the following can be embedded in a struct?
+A. Interface
+B. Pointer to another struct
+C. Both A and B
+D. None of the above
+ANSWER: C
+
+How many methods does this type implement?
+
+type Printer interface {
+    Print()
+}
+
+type MyPrinter struct{}
+
+func (m MyPrinter) Print() {}
+
+A. None
+B. One
+C. Two
+D. Cannot be determined
+ANSWER: B
+
+Which of the following is true about type assertion in Go?
+A. It always panics
+B. It checks interface compatibility at runtime
+C. It replaces reflection
+D. It only works with structs
+ANSWER: B
+
+What is the output?
+
+type MyError struct{}
+
+func (e MyError) Error() string {
+    return "error"
+}
+
+func main() {
+    var err error = MyError{}
+    if errors.As(err, &MyError{}) {
+        fmt.Println("Matched")
+    } else {
+        fmt.Println("Not matched")
+    }
+}
+A. Matched
+B. Not matched
+C. Compilation error
+D. Panic
+ANSWER: C
+
+What’s the problem with this code?
+
+func main() {
+    var err error = nil
+    fmt.Println(err == nil)
+}
+A. true
+B. false
+C. Compilation error
+D. Panic
+ANSWER: A
+
+Which of the following allows dynamic behavior in Go?
+A. Structs
+B. Maps
+C. Interfaces
+D. Channels
+ANSWER: C
+
+--- Very Hard ---
+
+What happens here?
+
+type Animal interface {
+    Speak()
+}
+
+type Dog struct{}
+
+func (d Dog) Speak() {
+    fmt.Println("Woof")
+}
+
+func main() {
+    var a Animal
+    var d *Dog = nil
+    a = d
+    fmt.Println(a == nil)
+}
+A. true
+B. false
+C. Compilation error
+D. Panic
+ANSWER: B
+
+What does this print?
+
+type CustomErr struct {
+    msg string
+}
+
+func (e *CustomErr) Error() string {
+    return e.msg
+}
+
+func main() {
+    err := fmt.Errorf("wrapped: %w", &CustomErr{"failure"})
+    var ce *CustomErr
+    fmt.Println(errors.As(err, &ce))
+}
+A. true
+B. false
+C. Compilation error
+D. Panic
+ANSWER: A
+
+Which of these will panic?
+
+var err error = nil
+var ptr *int = nil
+A. fmt.Println(err)
+B. fmt.Println(ptr)
+C. fmt.Println(*ptr)
+D. None of the above
+ANSWER: C
+
+What’s wrong with this?
+
+type Data struct {
+    ID int
+}
+
+func (d Data) Modify() {
+    d.ID = 10
+}
+
+func main() {
+    data := Data{ID: 1}
+    data.Modify()
+    fmt.Println(data.ID)
+}
+A. Nothing, will print 10
+B. Will print 1
+C. Compilation error
+D. Runtime panic
+ANSWER: B
+
+Which statement is true?
+
+A. You can use `errors.Is` for type assertions
+B. `errors.As` unwraps error chains to assign matching type
+C. `errors.New` supports wrapping
+D. `fmt.Errorf` cannot wrap errors
+ANSWER: B
