@@ -12,6 +12,7 @@ func worker(taskCh chan string, wg *sync.WaitGroup, workerId int, resultCh chan 
 	for v := range taskCh {
 		s := fmt.Sprintf("Workerid %d - %s\n", workerId, strings.ToUpper(v))
 		resultCh <- s
+		//fmt.Println(s)
 	}
 
 }
@@ -23,20 +24,25 @@ func main() {
 	taskChan := make(chan string)
 	resultchan := make(chan string)
 	fn := []string{"a.txt", "b.txt", "c.txt", "d.txt"}
-
 	for i := 0; i < NUM_WORKERS; i++ {
 		wg.Add(1)
 		go worker(taskChan, &wg, i, resultchan)
 	}
+	//wg.Add(1)
+	go func() {
+		for g := range resultchan {
+			fmt.Println(g)
+		}
+		//defer wg.Done()
+	}()
+
 	for i := 0; i < len(fn); i++ {
 		taskChan <- fn[i]
 	}
 
 	close(taskChan)
 
-	for g := range resultchan {
-		fmt.Println(g)
-	}
+	close(resultchan)
 
 	wg.Wait()
 }
