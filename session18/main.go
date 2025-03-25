@@ -9,8 +9,8 @@ import (
 
 func generator(genCh chan<- int, count int) {
 	// it will generate random numbers
-	for range count {
-		rn := rand.Int()
+	for i := 0; i < count; i++ {
+		rn := rand.Intn(100)
 		genCh <- rn
 	}
 
@@ -46,7 +46,9 @@ const COUNT = 1000
 func main() {
 	genCh := make(chan int)
 	resultCh := make(chan int)
-	sliceOfChannels := make([]<-chan int, NUM_WORKERS)
+	//var sliceOfChannels []<-chan int
+	sliceOfChannels := make([]<-chan int, 0)
+	fmt.Println(cap(sliceOfChannels))
 	go generator(genCh, COUNT)
 	for range NUM_WORKERS { // Workers will be spawned
 		outCh := worker(genCh)
