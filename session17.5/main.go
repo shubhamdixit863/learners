@@ -20,7 +20,7 @@ const NUM_WORKERS = 2
 
 func main() {
 	var wg sync.WaitGroup
-	//var rg sync.WaitGroup
+	var rg sync.WaitGroup
 	taskChan := make(chan string)
 	resultchan := make(chan string)
 	fn := []string{"a.txt", "b.txt", "c.txt", "d.txt"}
@@ -29,10 +29,9 @@ func main() {
 		wg.Add(1)
 		go worker(taskChan, &wg, i, resultchan)
 	}
-
-	wg.Add(1)
+	rg.Add(1)
 	go func() {
-		defer wg.Done()
+		defer rg.Done()
 		for g := range resultchan {
 			fmt.Println(g)
 		}
@@ -44,9 +43,8 @@ func main() {
 	}
 
 	close(taskChan)
-	close(resultchan)
 	wg.Wait()
-
-	//rg.Wait()
+	close(resultchan)
+	rg.Wait()
 
 }
