@@ -11,6 +11,63 @@ type RequestBody struct {
 	Name string `json:"name"`
 }
 
+//type CustomResponse struct {
+//
+//}
+//
+//func (c CustomResponse) Header() http.Header {
+//	//TODO implement me
+//	panic("implement me")
+//}
+//
+//func (c CustomResponse) Write(bytes []byte) (int, error) {
+//
+//}
+//
+//func (c CustomResponse) WriteHeader(statusCode int) {
+//	//TODO implement me
+//	panic("implement me")
+//}
+
+//func NewCustomResponse() http.ResponseWriter {
+//	return &CustomResponse{}
+//}
+
+/*package main
+
+import "fmt"
+
+type Writer interface {
+	Write() string
+}
+
+type HttpResponseWriter interface {
+	Print() string
+	Write() string
+}
+
+type Data struct {
+}
+
+func (d *Data) Write() string {
+	return "hello from Data"
+}
+
+func (d *Data) Print() string {
+	return "hello from Data"
+}
+
+func MyFun(w HttpResponseWriter) {
+	fmt.Println(w.Write())
+
+}
+
+func main() {
+	var h Writer
+	h = &Data{}
+	MyFun(h)
+}
+*/
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		if req.Method == "GET" {
@@ -18,6 +75,9 @@ func main() {
 		}
 		w.WriteHeader(405)
 	})
+
+	// How to serve html
+	// how to send json response
 
 	http.HandleFunc("/create", func(w http.ResponseWriter, req *http.Request) {
 		if req.Method == "POST" {
@@ -32,9 +92,15 @@ func main() {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
-			log.Println("HEllo", re.Name)
-
-			w.Write([]byte("hello world"))
+			//log.Println("HEllo", re.Name)
+			//log.Println(reflect.TypeOf(w))
+			//http.Response{} /// default response object which implements the http.ResponseWriter
+			w.Header().Add("Content-Type", "encoding/json")
+			err = json.NewEncoder(w).Encode(&re)
+			if err != nil {
+				return
+			}
+			//w.Write([]byte("hello world"))
 			return
 		} else if req.Method == http.MethodGet {
 			log.Println(req.URL)
