@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 type RequestBody struct {
@@ -33,47 +34,62 @@ type RequestBody struct {
 //	return &CustomResponse{}
 //}
 
-/*package main
+/*
+package main
 
 import "fmt"
 
-type Writer interface {
-	Write() string
-}
+	type Writer interface {
+		Write() string
+	}
 
-type HttpResponseWriter interface {
-	Print() string
-	Write() string
-}
+	type HttpResponseWriter interface {
+		Print() string
+		Write() string
+	}
 
 type Data struct {
 }
 
-func (d *Data) Write() string {
-	return "hello from Data"
+	func (d *Data) Write() string {
+		return "hello from Data"
+	}
+
+	func (d *Data) Print() string {
+		return "hello from Data"
+	}
+
+	func MyFun(w HttpResponseWriter) {
+		fmt.Println(w.Write())
+
 }
 
-func (d *Data) Print() string {
-	return "hello from Data"
-}
-
-func MyFun(w HttpResponseWriter) {
-	fmt.Println(w.Write())
-
-}
-
-func main() {
-	var h Writer
-	h = &Data{}
-	MyFun(h)
-}
+	func main() {
+		var h Writer
+		h = &Data{}
+		MyFun(h)
+	}
 */
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		if req.Method == "GET" {
-			w.Write([]byte("hello world"))
+	http.Handle("/", http.FileServer(http.Dir("../internal/static/")))
+
+	http.HandleFunc("/data", func(writer http.ResponseWriter, request *http.Request) {
+
+		//read the file
+
+		file, err := os.ReadFile("../internal/static/data.html")
+		if err != nil {
+			return
 		}
-		w.WriteHeader(405)
+		writer.Write(file)
+	})
+
+	http.HandleFunc("/datacustom", func(writer http.ResponseWriter, request *http.Request) {
+
+		//read the file
+
+		http.ServeFile(writer, request, "../internal/static/data.html")
+
 	})
 
 	// How to serve html
@@ -95,7 +111,7 @@ func main() {
 			//log.Println("HEllo", re.Name)
 			//log.Println(reflect.TypeOf(w))
 			//http.Response{} /// default response object which implements the http.ResponseWriter
-			w.Header().Add("Content-Type", "encoding/json")
+			w.Header().Add("Content-Type", "application/json")
 			err = json.NewEncoder(w).Encode(&re)
 			if err != nil {
 				return
