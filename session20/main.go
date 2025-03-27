@@ -21,7 +21,7 @@ func (s *ServerHandler) ServeHTTP(writer http.ResponseWriter, request *http.Requ
 	fmt.Println("Raw path", request.URL.Path)
 	// Split the path
 	pathSlice := strings.Split(request.URL.Path, "/")
-
+	fmt.Println("HEELLEO")
 	// Our own custom routes
 	if _, ok := Routes[pathSlice[1]]; ok {
 		// v would be the slice of child route
