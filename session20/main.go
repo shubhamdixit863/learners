@@ -64,6 +64,24 @@ func NewServerHandler() http.Handler {
 	return &ServerHandler{}
 }
 
+// custom types
+
+type Data int
+
+type myFunc func(int, int) int
+
+//func (d *Data) ServeHTTP(writer http.ResponseWriter, request *http.Request){
+//
+//}
+
+func Do(d Data) {
+
+}
+
+func Cb(fn myFunc) {
+	c := fn(8, 9)
+	log.Println(c)
+}
 func main() {
 
 	customHandler := NewServerHandler()
@@ -72,5 +90,13 @@ func main() {
 	if err != nil {
 		return
 	}
+	//var c int64
+	//
+	////g := Data(c)
+	//Do()
+
+	Cb(func(i int, i2 int) int {
+		return i + i2
+	})
 
 }
