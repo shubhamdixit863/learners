@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"session20-gin-app/handlers"
+	"session20-gin-app/middlewares"
 )
 
 func PingHandler(c *gin.Context) {
@@ -25,6 +26,8 @@ func main() {
 	crudHandler := handlers.NewHandler(users)
 
 	crudRoutes := r.Group("/api/v1")
+	crudRoutes.Use(middlewares.Middleware())
+	crudRoutes.Use(gin.Logger())
 	crudRoutes.POST("/create", crudHandler.Create)
 	crudRoutes.GET("/get", crudHandler.Get)
 	crudRoutes.GET("/get/:id", crudHandler.GetById)

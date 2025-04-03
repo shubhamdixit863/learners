@@ -1,39 +1,28 @@
 package middlewares
 
 import (
-	"fmt"
+	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
-func Middleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Our middleware logic goes here...
-		// print out the request
-		fmt.Println(r.URL.Path)
+func Middleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// we will access the info here
 
-		if r.URL.Query().Get("token") == "" {
+		// you can get headers easily
+		auth := c.GetHeader("Authorization")
 
-			// You can directly send a response
-
-			w.Write([]byte("Please provide the token"))
+		if len(auth) == 0 {
+			c.JSON(http.StatusForbidden, gin.H{
+				"message": "Auth header missing",
+			})
+			c.Abort()
 			return
-
+		} else {
+			log.Println("Middleware executed")
+			c.Next()
 		}
-
-		// this should be called when everything is right
-
-		next.ServeHTTP(w, r)
-	})
-}
-
-func LoggMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Our middleware logic goes here...
-		// print out the request
-		fmt.Println("Just printing out the logs", r.URL.Path)
-
-		// this should be called when everything is right
-
-		next.ServeHTTP(w, r)
-	})
+		return
+	}
 }
