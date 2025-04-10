@@ -1,9 +1,11 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"log"
+	"net/http"
 	"session-23-gin-jwt/internal/handlers"
 	"session-23-gin-jwt/internal/middlewares"
 	"session-23-gin-jwt/internal/repository"
@@ -21,11 +23,18 @@ func main() {
 
 	r := gin.Default()
 
+	r.Use(cors.Default())
+
 	// Handler Object
 	repo := repository.NewInMemory()
 	jwtService := &services.JWTService{}
 	handler := handlers.NewHandler(repo, jwtService)
 	v1 := r.Group("/api/v1")
+	v1.GET("/healthz", func(context *gin.Context) {
+		context.JSON(http.StatusOK, gin.H{
+			"message": "All good",
+		})
+	})
 	// Two types of groups // auth routes
 	auth := v1.Group("/auth") // /api/v1/auth
 
