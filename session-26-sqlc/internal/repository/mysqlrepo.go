@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"github.com/jmoiron/sqlx"
+	"log"
 	"session-23-gin-jwt/internal/models"
 	"strconv"
 )
@@ -41,9 +42,11 @@ func (m MysqlRepo) CreateUser(ctx context.Context, user models.User) (string, er
 
 func (m MysqlRepo) GetUserByUserName(ctx context.Context, userName string) (*models.User, error) {
 	var user models.User
-	row := m.conn.QueryRowx("select * from Users where userName=?", userName)
-	err := row.Scan(&user)
+	log.Println(userName)
+	row := m.conn.QueryRowx("select Username,FirstName,SecondName from Users where userName=?", userName)
+	err := row.Scan(&user.FirstName, &user.SeconName, &user.Username)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
