@@ -52,4 +52,59 @@ func main() {
 	}
 
 	fmt.Println(users)
+
+	// insert query
+	//
+	//result, err := conn.ExecContext(ctx, `INSERT  INTO Users(FirstName,SecondName,UserName,password) VALUES("shivam","gupta","some_username","some password")`)
+	//if err != nil {
+	//	log.Println(err)
+	//	return
+	//}
+
+	//fmt.Println(result.LastInsertId())
+	//
+	//fmt.Println(result.RowsAffected())
+
+	//username := "some_username'); describe users;--"
+	//query := fmt.Sprintf(`INSERT INTO Users (FirstName, SecondName, UserName, password) VALUES ("shivam", "gupta", "%s", "some password")`, username)
+	//result, err := conn.ExecContext(ctx, query)
+	//
+	//if err != nil {
+	//	log.Println(err)
+	//}
+
+	result, err := conn.ExecContext(
+		ctx,
+		`INSERT INTO Users (FirstName, SecondName, UserName, password) VALUES (?, ?, ?, ?)`,
+		"shivam", "gupta", "some_username", "some password",
+	)
+	if err != nil {
+		log.Println("Error inserting user:", err)
+		return
+	}
+
+	log.Println(result)
+
+	result, err = conn.ExecContext(
+		ctx,
+		`Update Users set FirstName=? where id=?`,
+		"random", 1,
+	)
+	if err != nil {
+		log.Println("Error inserting user:", err)
+		return
+	}
+
+	result, err = conn.ExecContext(
+		ctx,
+		`Delete from Users  where id=?`,
+		2,
+	)
+	if err != nil {
+		log.Println("Error inserting user:", err)
+		return
+	}
+
+	log.Println(result)
+
 }
