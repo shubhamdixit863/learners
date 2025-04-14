@@ -13,7 +13,7 @@ type MysqlOrm struct {
 }
 
 func (m MysqlOrm) CreateUser(ctx context.Context, user models.User) (int, error) {
-	tx := m.db.Create(user)
+	tx := m.db.Create(&user)
 	if tx.Error != nil {
 		log.Println("error", tx.Error)
 		return 0, tx.Error

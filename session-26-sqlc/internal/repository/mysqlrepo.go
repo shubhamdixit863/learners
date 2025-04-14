@@ -27,6 +27,7 @@ func (m MysqlRepo) CreateUser(ctx context.Context, user models.User) (int, error
 		user.FirstName, user.SeconName, user.Username, user.Password)
 
 	if err != nil {
+		log.Println(err)
 		return 0, err
 	}
 
