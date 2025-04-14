@@ -40,7 +40,7 @@ func (i *InMemory) GetUserByUserName(ctx context.Context, userName string) (*mod
 	return nil, errors.New("user Not Found")
 }
 
-func (i *InMemory) CreateUser(ctx context.Context, user models.User) (string, error) {
+func (i *InMemory) CreateUser(ctx context.Context, user models.User) (int, error) {
 	// We wil create the user here
 	i.users[user.Username] = user
 

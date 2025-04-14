@@ -5,7 +5,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	"log"
 	"session-23-gin-jwt/internal/models"
-	"strconv"
 )
 
 type MysqlRepo struct {
@@ -22,21 +21,21 @@ func (m MysqlRepo) DeleteUser(ctx context.Context, user models.User) error {
 	panic("implement me")
 }
 
-func (m MysqlRepo) CreateUser(ctx context.Context, user models.User) (string, error) {
+func (m MysqlRepo) CreateUser(ctx context.Context, user models.User) (int, error) {
 
 	result, err := m.conn.ExecContext(ctx, `INSERT INTO Users (FirstName, SecondName, UserName, password) VALUES (?, ?, ?, ?)`,
 		user.FirstName, user.SeconName, user.Username, user.Password)
 
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 
 	id, err := result.LastInsertId()
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 
-	return strconv.Itoa(int(id)), nil
+	return int(id), nil
 
 }
 

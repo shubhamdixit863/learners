@@ -3,9 +3,13 @@ package main
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-mysql-org/go-mysql/driver"
-	"github.com/jmoiron/sqlx"
+	"gorm.io/gorm/logger"
+
+	//	_ "github.com/go-mysql-org/go-mysql/driver"
+	"gorm.io/driver/mysql"
+
 	"github.com/joho/godotenv"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"session-23-gin-jwt/internal/handlers"
@@ -15,7 +19,7 @@ import (
 )
 
 func main() {
-	dsn := "root:root@localhost:3306?users"
+	//dsn := "root:root@localhost:3306?users"
 
 	// We will load the env file
 	err := godotenv.Load(".env")
@@ -31,12 +35,21 @@ func main() {
 	// Handler Object
 	//repo := repository.NewInMemory()
 	// sqlx connection
-	db, err := sqlx.Connect("mysql", dsn)
+	//db, err := sqlx.Connect("mysql", dsn)
+	//if err != nil {
+	//	log.Println("Error connecting to the db", err)
+	//	return
+	//}
+	//repo := repository.NewMysqlReqo(db)
+	dsn := "root:root@tcp(127.0.0.1:3306)/users?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
-		log.Println("Error connecting to the db", err)
+		log.Println(err)
 		return
 	}
-	repo := repository.NewMysqlReqo(db)
+	repo := repository.NewMysqlOrm(db)
 	jwtService := &services.JWTService{}
 	handler := handlers.NewHandler(repo, jwtService)
 	v1 := r.Group("/api/v1")

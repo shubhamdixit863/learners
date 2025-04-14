@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"log"
 	"log/slog"
 	"net/http"
@@ -24,7 +23,7 @@ func (h *Handler) Signup(c *gin.Context) {
 
 	// We check here if the user is already there
 	_, err = h.repo.GetUserByUserName(c, signupRequest.Username)
-	log.Println(err)
+	log.Println("Error in getting the user by username", err)
 	if err == nil {
 		c.JSON(http.StatusCreated, gin.H{
 			"message": "User With Same Username already exists",
@@ -34,16 +33,15 @@ func (h *Handler) Signup(c *gin.Context) {
 
 	// What you have to do is save the data
 	// We have to convert the dto to the model
-	userIdData, _ := uuid.NewUUID()
+
 	userModel := models.User{
 		Username:  signupRequest.Username,
 		Password:  signupRequest.Password,
 		FirstName: signupRequest.FirstName,
 		SeconName: signupRequest.SecondName,
-		Email:     signupRequest.Email,
-		ID:        userIdData.String(),
 	}
 
+	slog.Default().Debug("Data for the userModel", userModel)
 	userId, err := h.repo.CreateUser(c, userModel)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
