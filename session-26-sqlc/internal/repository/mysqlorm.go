@@ -12,7 +12,7 @@ type MysqlOrm struct {
 	db *gorm.DB
 }
 
-func (m MysqlOrm) CreateUser(ctx context.Context, user models.User) (int, error) {
+func (m MysqlOrm) CreateUser(ctx context.Context, user models.User) (interface{}, error) {
 	tx := m.db.Create(&user)
 	if tx.Error != nil {
 		log.Println("error", tx.Error)

@@ -1,15 +1,13 @@
 package main
 
 import (
+	"flag"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm/logger"
-
-	//	_ "github.com/go-mysql-org/go-mysql/driver"
-	"gorm.io/driver/mysql"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 
 	"github.com/joho/godotenv"
-	"gorm.io/gorm"
 	"log"
 	"net/http"
 	"session-23-gin-jwt/internal/handlers"
@@ -18,9 +16,20 @@ import (
 	"session-23-gin-jwt/internal/services"
 )
 
+func mongoConnect(uri string) (*mongo.Client, error) {
+	client, err := mongo.Connect(options.Client().
+		ApplyURI(uri))
+	if err != nil {
+		return nil, err
+	}
+	return client, nil
+}
+
 func main() {
 	//dsn := "root:root@localhost:3306?users"
-
+	var dbtype string
+	flag.StringVar(&dbtype, "dbtype", "mongodb", "type of database to connect to (e.g. mongodb, postgres)")
+	flag.Parse()
 	// We will load the env file
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -41,15 +50,28 @@ func main() {
 	//	return
 	//}
 	//repo := repository.NewMysqlReqo(db)
-	dsn := "root:root@tcp(127.0.0.1:3306)/users?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	})
-	if err != nil {
-		log.Println(err)
-		return
+	//dsn := "root:root@tcp(127.0.0.1:3306)/users?charset=utf8mb4&parseTime=True&loc=Local"
+	//db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+	//	Logger: logger.Default.LogMode(logger.Info),
+	//})
+	//
+	//if err != nil {
+	//	log.Println(err)
+	//	return
+	//}
+	//repo := repository.NewMysqlOrm(db)
+	var repo repository.DbRepository
+	if dbtype == "mongodb" {
+		client, err := mongoConnect("mongodb://localhost:27017/users")
+		if err != nil {
+			log.Fatal("Error connecting mongodb", err)
+			return
+		}
+		repo = repository.NewMongoRepo(client)
+	} else if dbtype == "mysql" {
+
 	}
-	repo := repository.NewMysqlOrm(db)
+
 	jwtService := &services.JWTService{}
 	handler := handlers.NewHandler(repo, jwtService)
 	v1 := r.Group("/api/v1")

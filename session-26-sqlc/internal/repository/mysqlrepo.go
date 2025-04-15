@@ -21,7 +21,7 @@ func (m MysqlRepo) DeleteUser(ctx context.Context, user models.User) error {
 	panic("implement me")
 }
 
-func (m MysqlRepo) CreateUser(ctx context.Context, user models.User) (int, error) {
+func (m MysqlRepo) CreateUser(ctx context.Context, user models.User) (interface{}, error) {
 
 	result, err := m.conn.ExecContext(ctx, `INSERT INTO Users (FirstName, SecondName, UserName, password) VALUES (?, ?, ?, ?)`,
 		user.FirstName, user.SeconName, user.Username, user.Password)
