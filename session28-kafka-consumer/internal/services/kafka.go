@@ -9,6 +9,10 @@ type KafkaClient struct {
 	KafkaConn *kafka.Conn
 }
 
+func NewKafkaClient(KafkaConn *kafka.Conn) Broker {
+	return &KafkaClient{KafkaConn: KafkaConn}
+}
+
 func (k *KafkaClient) PublishMessages(data string) error {
 	// invoke kafka client methods
 	write, err := k.KafkaConn.Write([]byte(data))
