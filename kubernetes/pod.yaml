@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gin-api
+  labels:
+    app: gin-api
+spec:
+  containers:
+    - name: gin-api
+      image: shubhamdixit863/myginapi
+      ports:
+        - containerPort: 8090

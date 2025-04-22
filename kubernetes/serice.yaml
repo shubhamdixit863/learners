@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+  labels:
+    app: gin-api
+
+spec:
+  selector:
+    app: gin-api
+  type: NodePort
+  ports:
+    - port: 8090  # this service will be exposing this port
+      nodePort: 31000 # external users can access the service from this port
+      targetPort: 8090  # the port on which your app is running
